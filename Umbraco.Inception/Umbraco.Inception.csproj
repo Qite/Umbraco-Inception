@@ -113,6 +113,7 @@
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.4.0.30506.0\lib\net40\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.30506.0\lib\net40\System.Web.Helpers.dll</HintPath>
@@ -183,11 +184,26 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\UmbracoContentTypeAttribute.cs" />
+    <Compile Include="Attributes\UmbracoPropertyAttribute.cs" />
+    <Compile Include="Attributes\UmbracoTabAttribute.cs" />
+    <Compile Include="BL\TabBase.cs" />
+    <Compile Include="BL\UmbracoGeneratedBase.cs" />
+    <Compile Include="CodeFirst\UmbracoCodeFirstInitializer.cs" />
+    <Compile Include="Converters\ConverterHelper.cs" />
+    <Compile Include="Converters\JsonConverter.cs" />
+    <Compile Include="Converters\MediaIdConverter.cs" />
+    <Compile Include="Converters\ModelConverter.cs" />
+    <Compile Include="Converters\MultipleMediaIdConverter.cs" />
+    <Compile Include="Converters\UBooleanConverter.cs" />
+    <Compile Include="Converters\UDateTimeConverter.cs" />
+    <Compile Include="Extensions\UmbracoCodeFirstExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
