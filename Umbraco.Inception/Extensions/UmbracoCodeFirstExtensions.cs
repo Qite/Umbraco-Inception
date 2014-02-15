@@ -39,25 +39,39 @@ namespace Umbraco.Inception.Extensions
                 {
                     UmbracoPropertyAttribute propertyAttribute = propertyOnTab.GetCustomAttribute<UmbracoPropertyAttribute>();
                     string alias = HyphenToUnderscore(ParseUrl(propertyAttribute.Alias + "_" + tabAttribute.Name, false));
-                    string umbracoStoredValue = content.GetPropertyValue<string>(alias);
-
-                    if (propertyAttribute.ConverterType != null)
-                    {
-                        TypeConverter converter = (TypeConverter)Activator.CreateInstance(propertyAttribute.ConverterType);
-                        propertyOnTab.SetValue(propertyTabInstance, converter.ConvertFrom(null, CultureInfo.InvariantCulture, umbracoStoredValue));
-                    }
-                    else
-                    {
-                        propertyOnTab.SetValue(propertyTabInstance, umbracoStoredValue);
-                    }
+                    GetPropertyValueOnInstance(content, propertyTabInstance, propertyOnTab, propertyAttribute, alias);
                 }
 
                 property.SetValue(instance, propertyTabInstance);
 
             }
 
+            //properties on Generic Tab
+            var propertiesOnGenericTab = typeof(T).GetProperties().Where(x => x.GetCustomAttribute<UmbracoPropertyAttribute>() != null);
+            foreach (var item in propertiesOnGenericTab)
+            {
+                UmbracoPropertyAttribute umbracoPropertyAttribute = item.GetCustomAttribute<UmbracoPropertyAttribute>();
+                GetPropertyValueOnInstance(content, instance, item, umbracoPropertyAttribute);
+            }
+
             (instance as UmbracoGeneratedBase).UmbracoId = content.Id;
             return instance;
+        }
+
+        private static void GetPropertyValueOnInstance(IPublishedContent content, object objectInstance, PropertyInfo propertyOnTab, UmbracoPropertyAttribute propertyAttribute, string alias = null)
+        {
+            if (alias == null) alias = propertyAttribute.Alias;
+            string umbracoStoredValue = content.GetPropertyValue<string>(alias);
+
+            if (propertyAttribute.ConverterType != null)
+            {
+                TypeConverter converter = (TypeConverter)Activator.CreateInstance(propertyAttribute.ConverterType);
+                propertyOnTab.SetValue(objectInstance, converter.ConvertFrom(null, CultureInfo.InvariantCulture, umbracoStoredValue));
+            }
+            else
+            {
+                propertyOnTab.SetValue(objectInstance, umbracoStoredValue);
+            }
         }
 
         /// <summary>

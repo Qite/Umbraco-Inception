@@ -52,28 +52,44 @@ namespace Umbraco.Inception.BL
                 {
                     PropertyInfo property = propertiesInsideTab[j];
                     UmbracoPropertyAttribute umbracoPropertyAttribute = property.GetCustomAttribute<UmbracoPropertyAttribute>();
-                    object convertedValue;
                     object propertyValue = property.GetValue(instanceOfTab);
-                    if (umbracoPropertyAttribute.ConverterType != null)
-                    {
-
-                        TypeConverter converter = (TypeConverter)Activator.CreateInstance(umbracoPropertyAttribute.ConverterType);
-                        convertedValue = converter.ConvertTo(null, CultureInfo.InvariantCulture, propertyValue, typeof(string));
-                    }
-                    else
-                    {
-                        //No converter is given so basically we push the string back into umbraco
-                        convertedValue = propertyValue.ToString();
-                    }
-
-
                     string alias = UmbracoCodeFirstExtensions.HyphenToUnderscore(UmbracoCodeFirstExtensions.ParseUrl(umbracoPropertyAttribute.Alias + "_" + tabAttribute.Name, false));
-                    content.SetValue(alias, convertedValue);
+                    SetPropertyOnIContent(content, umbracoPropertyAttribute, propertyValue, alias);
                 }
+            }
+
+            //properties on generic tab
+            var propertiesOnGenericTab = currentType.GetProperties().Where(x => x.GetCustomAttribute<UmbracoPropertyAttribute>() != null);
+            foreach (var item in propertiesOnGenericTab)
+            {
+                UmbracoPropertyAttribute umbracoPropertyAttribute = item.GetCustomAttribute<UmbracoPropertyAttribute>();
+                object propertyValue = item.GetValue(this);
+                SetPropertyOnIContent(content, umbracoPropertyAttribute, propertyValue);
             }
 
             //persist object into umbraco database
             contentSerivce.SaveAndPublishWithStatus(content, userId, raiseEvents);
         }
+
+        private void SetPropertyOnIContent(IContent content, UmbracoPropertyAttribute umbracoPropertyAttribute, object propertyValue, string alias = null)
+        {
+            object convertedValue;
+            if (umbracoPropertyAttribute.ConverterType != null)
+            {
+
+                TypeConverter converter = (TypeConverter)Activator.CreateInstance(umbracoPropertyAttribute.ConverterType);
+                convertedValue = converter.ConvertTo(null, CultureInfo.InvariantCulture, propertyValue, typeof(string));
+            }
+            else
+            {
+                //No converter is given so basically we push the string back into umbraco
+                convertedValue = propertyValue.ToString();
+            }
+
+            if (alias == null) alias = umbracoPropertyAttribute.Alias;
+
+            content.SetValue(alias, convertedValue);
+        }
+
     }
 }
