@@ -40,7 +40,7 @@ The UmbracoProperty attribute has a couple of parameters which may need some gui
 DataType is the umbraco dataType you want to use. All the built-in dataTypes of Umbraco are stored as constants in the static class BuiltInUmbracoDataTypes.
 If you have create your own U7 DataType (the cool stuff with AngularJS) then you enter the alias and the dataTypeInstanceName is the name of your dataType instance you configured in the Developer section.
 
-So if you just to use TextString so can say:
+So if you just want to use TextString, you can say:
 
 ```csharp
 [UmbracoProperty("My name", "myAlias",BuiltInUmbracoDataTypes.Textbox, null, null)]
@@ -62,7 +62,7 @@ public string PictureUrl { get; set; }
 
 The converters we provide (all living in Umbraco.Inception.Converters) are JsonConverter (generic), MediaIdConverter, ModelConverter (generic), MultipleMediaIdConverter, UBooleanConverter, UDateTimeConverter.
 
-If you want to write your own than you need to create a class that inherits [TypeConverter]("http://msdn.microsoft.com/en-us/library/system.componentmodel.typeconverter(v=vs.110).aspx")
+If you want to write your own then you need to create a class that inherits [TypeConverter]("http://msdn.microsoft.com/en-us/library/system.componentmodel.typeconverter(v=vs.110).aspx")
 and override the following methods:
 
 - public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
@@ -104,7 +104,7 @@ public class Person:UmbracoGeneratedBase
 
 Note that this can be great for multi-lingual sites.
 
-Next step if to register your model.
+Next step is to register your model.
 This can be done on Application Startup
 f.ex:
 
@@ -134,7 +134,7 @@ If it already exists then it will look for changes.
 
 ##Ok, so far so good but now what
 
-The project contains an extensions method (living in Umbraco.Inception.Extensions) that can convert a IPublishedContent back to your original model.
+The project contains an extension method (living in Umbraco.Inception.Extensions) that can convert a IPublishedContent back to your original model.
 
 So you can have a typed instance of your Umbraco document in your view.
 
@@ -151,7 +151,7 @@ So you can have a typed instance of your Umbraco document in your view.
 ##It goes one step further
 
 If you read the section on converterType carefully you'll notice that we convert both ways.
-This means that if for some reason you're I don't know inside an ApiController and you made a changes to your model.
+This means that you can make a change to your model and save it back to Umbraco.
 You can call it's inherited method Persist.
 
 ```csharp
@@ -171,10 +171,10 @@ public void SomeMethodInAController(int contentId)
 We provided a demo project at [Github](https://github.com/Qite/InceptionDemo). 
 
 ##Cool, where can I help
-Well by testing it you might discover something we forget or some situation we ourselfs haven't faced yet.
+- Well by testing it you might discover something we forgot or some situation we haven't faced yet.
 Don't hesitate to create a [bug report](https://github.com/Qite/Umbraco-Inception/issues)
 
-Solve your own problem, reporting a bug is cool but solving it is just plain awesome!
+- Solve your own problem, reporting a bug is cool but solving it is just plain awesome!
 
 ##Contact
 Any further questions may be directed here on github or at florian@qite.be
