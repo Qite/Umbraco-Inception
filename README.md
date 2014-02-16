@@ -22,7 +22,17 @@ public class Person
 }
 ```
 
-Then you add the matching properties on your model and let it inherit from UmbracoGeneratedBase.
+Then you add the matching properties on your model and let it inherit from UmbracoGeneratedBase (or an other class that inherits UmbracoGeneratedBase).
+
+```csharp
+[UmbracoContentType("Name","alias", ...)]
+public class Person:UmbracoGeneratedBase
+{
+    [UmbracoProperty("Name","alias","Type",...)]
+    public string Name { get; set; }
+}
+```
+
 The UmbracoProperty attribute has a couple of parameters which may need some guidance.
 
 ```string dataType, string dataTypeInstanceName = null, Type converterType = null``` 
@@ -60,17 +70,6 @@ and override the following methods:
 - public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
 - public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
 
-
-
-
-```csharp
-[UmbracoContentType("Name","alias", ...)]
-public class Person:UmbracoGeneratedBase
-{
-    [UmbracoProperty("Name","alias","Type",...)]
-    public string Name { get; set; }
-}
-```
 
 If you would like to group properties to a specific tab you create a tab class.
 
@@ -151,3 +150,31 @@ So you can have a typed instance of your Umbraco document in your view.
 
 ##It goes one step further
 
+If you read the section on converterType carefully you'll notice that we convert both ways.
+This means that if for some reason you're I don't know inside an ApiController and you made a changes to your model.
+You can call it's inherited method Persist.
+
+```csharp
+using Umbraco.Inception.Extensions;
+
+public void SomeMethodInAController(int contentId)
+{
+    IPublishedContent content = Umbraco.TypedContent(contentId);
+    Person johnDoe = content.ConvertToModel<Person>();
+    johnDoe.Name = "Johnny";
+    johnDoe.Persist();
+}
+```
+
+##Check out the demo project
+
+We provided a demo project at [Github](https://github.com/Qite/InceptionDemo). 
+
+##Cool, where can I help
+Well by testing it you might discover something we forget or some situation we ourselfs haven't faced yet.
+Don't hesitate to create a [bug report](https://github.com/Qite/Umbraco-Inception/issues)
+
+Solve your own problem, reporting a bug is cool but solving it is just plain awesome!
+
+##Contact
+Any further questions may be directed here on github or at florian@qite.be
