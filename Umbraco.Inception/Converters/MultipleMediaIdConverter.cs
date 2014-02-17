@@ -14,21 +14,6 @@ namespace Umbraco.Inception.Converters
     /// </summary>
     public class MultipleMediaIdConverter : TypeConverter
     {
-        public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
-        {
-            return (destinationType == typeof(string));
-        }
-
-        public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
-        {
-            if (value == null) return -1;
-            string valueContent = value.ToString();
-            IMediaService ms = ConverterHelper.GetMediaService();
-            IMedia media = ms.GetMediaByPath(valueContent);
-            if (media != null) return media.Id;
-            return -1;
-        }
-
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
             return (sourceType != typeof(string));
@@ -63,6 +48,21 @@ namespace Umbraco.Inception.Converters
             }
 
             return mediaUrlArray;
+        }
+
+        public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
+        {
+            return (destinationType == typeof(string));
+        }
+
+        public override object ConvertTo(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType)
+        {
+            if (value == null) return -1;
+            string valueContent = value.ToString();
+            IMediaService ms = ConverterHelper.GetMediaService();
+            IMedia media = ms.GetMediaByPath(valueContent);
+            if (media != null) return media.Id;
+            return -1;
         }
     }
 }
