@@ -178,3 +178,8 @@ Don't hesitate to create a [bug report](https://github.com/Qite/Umbraco-Inceptio
 
 ##Contact
 Any further questions may be directed here on github or at florian@qite.be
+
+##Thanks to
+We would like to thank everyone who has made any (small or big) contribution to this project:
+
+- JimBobSquarePants

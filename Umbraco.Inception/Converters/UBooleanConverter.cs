@@ -89,9 +89,14 @@
                 bool parsedValue;
                 if (bool.TryParse(value.ToString(), out parsedValue))
                 {
+                    //returning 0 or 1 causes crashed. I don't how umbraco stores booleans but returning numbers just does work here
                     if (parsedValue)
                     {
-                        return 1;
+                        return "1";
+                    }
+                    else
+                    {
+                        return "0";
                     }
                 }
             }
