@@ -143,7 +143,7 @@ So you can have a typed instance of your Umbraco document in your view.
 @using Umbraco.Inception.Extensions;
 @{
     Layout = null;
-    Person person = Content.ConvertToModel<Person>();
+    Person person = Model.Content.ConvertToModel<Person>();
 }
 <h1>Hi my name is @person.Name</h1>
 ```
