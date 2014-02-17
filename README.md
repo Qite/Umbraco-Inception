@@ -46,7 +46,7 @@ So if you just want to use TextString, you can say:
 [UmbracoProperty("My name", "myAlias",BuiltInUmbracoDataTypes.Textbox, null, null)]
 ```
 
-Built in dataTypes don't need an dataTypeInstance name. Your own do!
+Built in dataTypes don't need an dataTypeInstance name. Your own do if you have multiple instances of them.
 
 And the last funky parameter is the converterType.
 Why do we need that? Well Umbraco storeds certain types in a way we can't use them directly.
