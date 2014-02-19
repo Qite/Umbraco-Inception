@@ -35,7 +35,7 @@ namespace Umbraco.Inception.Extensions
                 var propertyTabInstance = Activator.CreateInstance(property.PropertyType);
                 var propertiesOnTab = property.PropertyType.GetProperties();
 
-                foreach (var propertyOnTab in propertiesOnTab)
+                foreach (var propertyOnTab in propertiesOnTab.Where(x => x.GetCustomAttribute<UmbracoPropertyAttribute>() != null))
                 {
                     UmbracoPropertyAttribute propertyAttribute = propertyOnTab.GetCustomAttribute<UmbracoPropertyAttribute>();
                     string alias = HyphenToUnderscore(ParseUrl(propertyAttribute.Alias + "_" + tabAttribute.Name, false));
