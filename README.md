@@ -3,11 +3,11 @@ Umbraco Inception
 
 A code first approach for Umbraco (7)
 
-Created by [Qite]("http://qite.be" "Qite Intelligent IT")
+Created by [Qite](http://qite.be "Qite Intelligent IT")
 
 ##How to install
 
-Install the Umbraco.Inception package from [nuget](http://www.nuget.org/packages/Umbraco.Inception/).
+Install the Umbraco.Inception package from [nuget]("http://www.nuget.org/packages/Umbraco.Inception/").
 
 Or download the package from the [Umbraco Package Repository](http://our.umbraco.org/projects/developer-tools/umbraco-inception)
 
