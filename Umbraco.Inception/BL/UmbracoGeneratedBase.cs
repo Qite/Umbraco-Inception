@@ -83,7 +83,7 @@ namespace Umbraco.Inception.BL
             else
             {
                 //No converter is given so basically we push the string back into umbraco
-                convertedValue = propertyValue.ToString();
+                convertedValue = (propertyValue != null ? propertyValue.ToString() : string.Empty);
             }
 
             if (alias == null) alias = umbracoPropertyAttribute.Alias;
