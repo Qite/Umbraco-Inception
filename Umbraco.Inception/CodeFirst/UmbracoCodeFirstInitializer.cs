@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Web.Hosting;
 using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Core.Services;
@@ -16,7 +16,7 @@ namespace Umbraco.Inception.CodeFirst
 {
     public static class UmbracoCodeFirstInitializer
     {
-        private const string ViewsFolder = "Views";
+        private const string ViewsFolderDefaultLocation = "~/Views";
 
         /// <summary>
         /// This method will create or update the Content Type in Umbraco.
@@ -131,7 +131,7 @@ namespace Umbraco.Inception.CodeFirst
                 }
 
                 currentTemplate = new Template(templatePath, attribute.ContentTypeName, attribute.ContentTypeAlias);
-                CreateViewFile(attribute.ContentTypeAlias, attribute.MasterTemplate, currentTemplate, type, fileService);
+                CreateViewFile(attribute.MasterTemplate, currentTemplate, type, fileService);
             }
 
             newContentType.AllowedTemplates = new ITemplate[] { currentTemplate };
@@ -265,16 +265,18 @@ namespace Umbraco.Inception.CodeFirst
 
             if (attribute.CreateMatchingView)
             {
-                Template currentTemplate = fileService.GetTemplate(attribute.ContentTypeAlias) as Template;
-                if (currentTemplate == null)
-                {
-                    //there should be a template but there isn't so we create one
-                    currentTemplate = new Template("~/Views/" + attribute.ContentTypeAlias + ".cshtml", attribute.ContentTypeName, attribute.ContentTypeAlias);
-                    CreateViewFile(attribute.ContentTypeAlias, attribute.MasterTemplate, currentTemplate, type, fileService);
-                    fileService.SaveTemplate(currentTemplate, 0);
-                }
-                contentType.AllowedTemplates = new ITemplate[] { currentTemplate };
-                contentType.SetDefaultTemplate(currentTemplate);
+                CreateMatchingView(fileService, attribute, type, contentType);
+
+                //Template currentTemplate = fileService.GetTemplate(attribute.ContentTypeAlias) as Template;
+                //if (currentTemplate == null)
+                //{
+                //    //there should be a template but there isn't so we create one
+                //    currentTemplate = new Template("~/Views/" + attribute.ContentTypeAlias + ".cshtml", attribute.ContentTypeName, attribute.ContentTypeAlias);
+                //    CreateViewFile(attribute.ContentTypeAlias, attribute.MasterTemplate, currentTemplate, type, fileService);
+                //    fileService.SaveTemplate(currentTemplate, 0);
+                //}
+                //contentType.AllowedTemplates = new ITemplate[] { currentTemplate };
+                //contentType.SetDefaultTemplate(currentTemplate);
             }
 
             VerifyProperties(contentType, type, dataTypeService);
@@ -460,11 +462,61 @@ namespace Umbraco.Inception.CodeFirst
             return aliases;
         }
 
-        private static void CreateViewFile(string alias, string master, Template template, Type type, IFileService fileService)
-        {
-            string physicalView = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, ViewsFolder + "\\" + alias + ".cshtml");
+        //private static void CreateMatchingView(IFileService fileService, UmbracoContentTypeAttribute attribute, Type type, IContentType newContentType)
+        //{
+        //    var currentTemplate = fileService.GetTemplate(attribute.ContentTypeAlias) as Template;
+        //    if (currentTemplate == null)
+        //    {
+        //        string templatePath;
+        //        if (string.IsNullOrEmpty(attribute.TemplateLocation))
+        //        {
+        //            templatePath = string.Format(CultureInfo.InvariantCulture, "~/Views/{0}.cshtml", attribute.ContentTypeAlias);
+        //        }
+        //        else
+        //        {
+        //            templatePath = string.Format(CultureInfo.InvariantCulture, "{0}{1}{2}.cshtml",
+        //                attribute.TemplateLocation,                                     // The template location
+        //                attribute.TemplateLocation.EndsWith("/") ? string.Empty : "/",  // Ensure the template location ends with a "/"
+        //                attribute.ContentTypeAlias);                                    // The alias
+        //        }
 
-            StringBuilder sb = new StringBuilder();
+        //        currentTemplate = new Template(templatePath, attribute.ContentTypeName, attribute.ContentTypeAlias);
+        //        CreateViewFile(attribute.MasterTemplate, currentTemplate, type, fileService);
+        //    }
+
+        //    newContentType.AllowedTemplates = new ITemplate[] { currentTemplate };
+        //    newContentType.SetDefaultTemplate(currentTemplate);
+
+        //    //TODO: in Umbraco 7.1 it will be possible to set the master template of the newly created template
+        //    //https://github.com/umbraco/Umbraco-CMS/pull/294
+        //}
+
+        private static void CreateViewFile(string masterTemplate, Template template, Type type, IFileService fileService)
+        {
+            string physicalViewFileLocation = HostingEnvironment.MapPath(template.Path);
+            if (string.IsNullOrEmpty(physicalViewFileLocation))
+            {
+                throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, "Failed to {0} to a physical location", template.Path));
+            }
+
+            var templateContent = CreateDefaultTemplateContent(masterTemplate, type);
+            template.Content = templateContent;
+
+            using (var sw = System.IO.File.CreateText(physicalViewFileLocation))
+            {
+                sw.Write(templateContent);
+            }
+
+            //This code doesn't work because template.MasterTemplateId is defined internal
+            //I'll do a pull request to change this
+            //TemplateNode rootTemplate = fileService.GetTemplateNode(master);
+            //template.MasterTemplateId = new Lazy<int>(() => { return rootTemplate.Template.Id; });
+            fileService.SaveTemplate(template, 0);
+        }
+
+        private static string CreateDefaultTemplateContent(string master, Type type)
+        {
+            var sb = new StringBuilder();
             sb.AppendLine("@inherits Umbraco.Web.Mvc.UmbracoTemplatePage");
             sb.AppendLine("@*@using Qite.Umbraco.CodeFirst.Extensions;*@");
             sb.AppendLine("@{");
@@ -472,17 +524,7 @@ namespace Umbraco.Inception.CodeFirst
             sb.AppendLine("\t//" + type.Name + " model = Model.Content.ConvertToRealModel<" + type.Name + ">();");
             sb.AppendLine("}");
 
-            using (StreamWriter sw = System.IO.File.CreateText(physicalView))
-            {
-                sw.Write(sb.ToString());
-            }
-
-            template.Content = sb.ToString();
-            //This code doesn't work because template.MasterTemplateId is defined internal
-            //I'll do a pull request to change this
-            //TemplateNode rootTemplate = fileService.GetTemplateNode(master);
-            //template.MasterTemplateId = new Lazy<int>(() => { return rootTemplate.Template.Id; });
-            fileService.SaveTemplate(template, 0);
+            return sb.ToString();
         }
 
         #endregion Shared logic
