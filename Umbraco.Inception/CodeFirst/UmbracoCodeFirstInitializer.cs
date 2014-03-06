@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Reflection;
+using System.Text;
 using Umbraco.Core;
-using Umbraco.Inception.Attributes;
 using Umbraco.Core.Models;
 using Umbraco.Core.Services;
+using Umbraco.Inception.Attributes;
 using Umbraco.Inception.BL;
 using Umbraco.Inception.Extensions;
-using System.IO;
 
 namespace Umbraco.Inception.CodeFirst
 {
@@ -29,7 +29,6 @@ namespace Umbraco.Inception.CodeFirst
             var fileService = ApplicationContext.Current.Services.FileService;
             var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
 
-
             UmbracoContentTypeAttribute attribute = type.GetCustomAttribute<UmbracoContentTypeAttribute>();
             if (attribute == null) return;
 
@@ -46,6 +45,7 @@ namespace Umbraco.Inception.CodeFirst
         }
 
         #region Create
+
         /// <summary>
         /// This method is called when the Content Type declared in the attribute hasn't been found in Umbraco
         /// </summary>
@@ -114,10 +114,23 @@ namespace Umbraco.Inception.CodeFirst
         /// <param name="newContentType"></param>
         private static void CreateMatchingView(IFileService fileService, UmbracoContentTypeAttribute attribute, Type type, IContentType newContentType)
         {
-            Template currentTemplate = fileService.GetTemplate(attribute.ContentTypeAlias) as Template;
+            var currentTemplate = fileService.GetTemplate(attribute.ContentTypeAlias) as Template;
             if (currentTemplate == null)
             {
-                currentTemplate = new Template("~/Views/" + attribute.ContentTypeAlias + ".cshtml", attribute.ContentTypeName, attribute.ContentTypeAlias);
+                string templatePath;
+                if (string.IsNullOrEmpty(attribute.TemplateLocation))
+                {
+                    templatePath = string.Format(CultureInfo.InvariantCulture, "~/Views/{0}.cshtml", attribute.ContentTypeAlias);
+                }
+                else
+                {
+                    templatePath = string.Format(CultureInfo.InvariantCulture, "{0}{1}{2}.cshtml",
+                        attribute.TemplateLocation,                                     // The template location
+                        attribute.TemplateLocation.EndsWith("/") ? string.Empty : "/",  // Ensure the template location ends with a "/"
+                        attribute.ContentTypeAlias);                                    // The alias
+                }
+
+                currentTemplate = new Template(templatePath, attribute.ContentTypeName, attribute.ContentTypeAlias);
                 CreateViewFile(attribute.ContentTypeAlias, attribute.MasterTemplate, currentTemplate, type, fileService);
             }
 
@@ -209,14 +222,13 @@ namespace Umbraco.Inception.CodeFirst
                 {
                     newContentType.AddPropertyType(propertyType, tabName);
                 }
-
             }
         }
 
-
-        #endregion
+        #endregion Create
 
         #region Update
+
         /// <summary>
         /// Update the existing content Type based on the data in the attributes
         /// </summary>
@@ -251,7 +263,6 @@ namespace Umbraco.Inception.CodeFirst
                 }
             }
 
-
             if (attribute.CreateMatchingView)
             {
                 Template currentTemplate = fileService.GetTemplate(attribute.ContentTypeAlias) as Template;
@@ -266,10 +277,7 @@ namespace Umbraco.Inception.CodeFirst
                 contentType.SetDefaultTemplate(currentTemplate);
             }
 
-
             VerifyProperties(contentType, type, dataTypeService);
-
-
 
             //verify if a tab has no properties, if so remove
             var propertyGroups = contentType.PropertyGroups.ToArray();
@@ -285,7 +293,6 @@ namespace Umbraco.Inception.CodeFirst
 
             //persist
             contentTypeService.Save(contentType, 0);
-
         }
 
         /// <summary>
@@ -397,16 +404,17 @@ namespace Umbraco.Inception.CodeFirst
                     {
                         contentType.AddPropertyType(property, tabName);
                     }
-
                 }
 
                 return property.Alias;
             }
             return null;
         }
-        #endregion
+
+        #endregion Update
 
         #region Shared logic
+
         /// <summary>
         /// Gets the allowed children
         /// </summary>
@@ -422,7 +430,6 @@ namespace Umbraco.Inception.CodeFirst
             List<string> aliases = GetAliasesFromTypes(types);
 
             var contentTypes = contentTypeService.GetAllContentTypes().Where(x => aliases.Contains(x.Alias)).ToArray();
-
 
             int length = contentTypes.Length;
             for (int i = 0; i < length; i++)
@@ -476,10 +483,8 @@ namespace Umbraco.Inception.CodeFirst
             //TemplateNode rootTemplate = fileService.GetTemplateNode(master);
             //template.MasterTemplateId = new Lazy<int>(() => { return rootTemplate.Template.Id; });
             fileService.SaveTemplate(template, 0);
-
-
         }
-        #endregion
 
+        #endregion Shared logic
     }
 }
