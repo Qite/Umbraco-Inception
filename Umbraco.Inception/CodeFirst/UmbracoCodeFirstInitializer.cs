@@ -462,35 +462,6 @@ namespace Umbraco.Inception.CodeFirst
             return aliases;
         }
 
-        //private static void CreateMatchingView(IFileService fileService, UmbracoContentTypeAttribute attribute, Type type, IContentType newContentType)
-        //{
-        //    var currentTemplate = fileService.GetTemplate(attribute.ContentTypeAlias) as Template;
-        //    if (currentTemplate == null)
-        //    {
-        //        string templatePath;
-        //        if (string.IsNullOrEmpty(attribute.TemplateLocation))
-        //        {
-        //            templatePath = string.Format(CultureInfo.InvariantCulture, "~/Views/{0}.cshtml", attribute.ContentTypeAlias);
-        //        }
-        //        else
-        //        {
-        //            templatePath = string.Format(CultureInfo.InvariantCulture, "{0}{1}{2}.cshtml",
-        //                attribute.TemplateLocation,                                     // The template location
-        //                attribute.TemplateLocation.EndsWith("/") ? string.Empty : "/",  // Ensure the template location ends with a "/"
-        //                attribute.ContentTypeAlias);                                    // The alias
-        //        }
-
-        //        currentTemplate = new Template(templatePath, attribute.ContentTypeName, attribute.ContentTypeAlias);
-        //        CreateViewFile(attribute.MasterTemplate, currentTemplate, type, fileService);
-        //    }
-
-        //    newContentType.AllowedTemplates = new ITemplate[] { currentTemplate };
-        //    newContentType.SetDefaultTemplate(currentTemplate);
-
-        //    //TODO: in Umbraco 7.1 it will be possible to set the master template of the newly created template
-        //    //https://github.com/umbraco/Umbraco-CMS/pull/294
-        //}
-
         private static void CreateViewFile(string masterTemplate, Template template, Type type, IFileService fileService)
         {
             string physicalViewFileLocation = HostingEnvironment.MapPath(template.Path);
@@ -512,6 +483,9 @@ namespace Umbraco.Inception.CodeFirst
             //TemplateNode rootTemplate = fileService.GetTemplateNode(master);
             //template.MasterTemplateId = new Lazy<int>(() => { return rootTemplate.Template.Id; });
             fileService.SaveTemplate(template, 0);
+
+            //    //TODO: in Umbraco 7.1 it will be possible to set the master template of the newly created template
+            //    //https://github.com/umbraco/Umbraco-CMS/pull/294
         }
 
         private static string CreateDefaultTemplateContent(string master, Type type)

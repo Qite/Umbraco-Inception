@@ -18,7 +18,7 @@ namespace Umbraco.Inception.Extensions
     public static class UmbracoCodeFirstExtensions
     {
         /// <summary>
-        /// Extension used to convert an IpublishedContent back to a Typed model instance.
+        /// Extension used to convert an IPublishedContent back to a Typed model instance.
         /// Your model does need to inherit from UmbracoGeneratedBase and contain the correct attributes
         /// </summary>
         /// <typeparam name="T"></typeparam>
