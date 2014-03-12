@@ -33,6 +33,8 @@ public class Person:UmbracoGeneratedBase
 }
 ```
 
+07/03/2014: There are now some overloads for the UmbracoContentType attribute. The last constructor makes it possible to set the location of the generated view, if you set createMatchingView to true
+
 The UmbracoProperty attribute has a couple of parameters which may need some guidance.
 
 ```string dataType, string dataTypeInstanceName = null, Type converterType = null``` 
@@ -183,3 +185,4 @@ Any further questions may be directed here on github or at florian@qite.be
 We would like to thank everyone who has made any (small or big) contribution to this project:
 
 - JimBobSquarePants
+- mmisztal1980 

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Umbraco.Inception.Attributes
 {
@@ -10,18 +6,40 @@ namespace Umbraco.Inception.Attributes
     public class UmbracoContentTypeAttribute : Attribute
     {
         public string ContentTypeName { get; set; }
+
         public string ContentTypeAlias { get; set; }
+
         public bool CreateMatchingView { get; set; }
+
+        /// <summary>
+        /// If specified - this will be the location for the generated content template within the project.
+        /// Example : ~/Views/MyViews
+        /// </summary>
+        public string TemplateLocation { get; set; }
+
         public string MasterTemplate { get; set; }
+
         public Type[] AllowedChildren { get; set; }
+
         public bool AllowedAtRoot { get; set; }
+
         public bool EnableListView { get; set; }
+
         public string Icon { get; set; }
 
         public UmbracoContentTypeAttribute(string contentTypeName, string contentTypeAlias,
             Type[] allowedChildren,
             bool createMatchingView,
             string icon = "icon-folder",
+            string masterTemplate = "", bool allowAtRoot = false, bool enableListView = false)
+            : this(contentTypeName, contentTypeAlias, null,
+            allowedChildren, createMatchingView, icon,
+            masterTemplate, allowAtRoot, enableListView)
+        {
+        }
+
+        public UmbracoContentTypeAttribute(string contentTypeName, string contentTypeAlias, string templateLocation,
+            Type[] allowedChildren, bool createMatchingView, string icon = "icon-folder",
             string masterTemplate = "", bool allowAtRoot = false, bool enableListView = false)
         {
             ContentTypeName = contentTypeName;
@@ -32,6 +50,7 @@ namespace Umbraco.Inception.Attributes
             AllowedAtRoot = allowAtRoot;
             AllowedChildren = allowedChildren;
             Icon = icon;
+            TemplateLocation = templateLocation;
         }
     }
 
@@ -649,6 +668,5 @@ namespace Umbraco.Inception.Attributes
         public const string IconAlertAlt = "icon-alert-alt";
         public const string IconChevronUp = "icon-chevron-up";
         public const string IconChevronDown = "icon-chevron-down";
-
     }
 }
