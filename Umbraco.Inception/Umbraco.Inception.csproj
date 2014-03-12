@@ -198,6 +198,8 @@
     <Compile Include="Converters\MultipleMediaIdConverter.cs" />
     <Compile Include="Converters\UBooleanConverter.cs" />
     <Compile Include="Converters\UDateTimeConverter.cs" />
+    <Compile Include="Converters\UDoubleConverter.cs" />
+    <Compile Include="Converters\UIntegerConverter.cs" />
     <Compile Include="Extensions\UmbracoCodeFirstExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -207,8 +209,8 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>:: xcopy /y "$(TargetPath)" "$(SolutionDir)Umbraco.Inception.Nuget\lib\net45"
-:: xcopy /y "$(TargetDir)$(TargetName).pdb"  "$(SolutionDir)Umbraco.Inception.Nuget\lib\net45"</PostBuildEvent>
+    <PostBuildEvent>xcopy /y "$(TargetPath)" "$(SolutionDir)Umbraco.Inception.Nuget\lib\net45"
+xcopy /y "$(TargetDir)$(TargetName).pdb"  "$(SolutionDir)Umbraco.Inception.Nuget\lib\net45"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
