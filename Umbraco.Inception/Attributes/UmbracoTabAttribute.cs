@@ -10,10 +10,12 @@ namespace Umbraco.Inception.Attributes
     public class UmbracoTabAttribute : Attribute
     {
         public string Name { get; set; }
+        public int SortOrder { get; set; }
 
-        public UmbracoTabAttribute(string name)
+        public UmbracoTabAttribute(string name, int sortOrder = 0)
         {
             Name = name;
+            SortOrder = sortOrder;
         }
     }
 }

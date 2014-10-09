@@ -157,6 +157,7 @@ namespace Umbraco.Inception.CodeFirst
                 var tabAttribute = properties[i].GetCustomAttribute<UmbracoTabAttribute>();
 
                 newContentType.AddPropertyGroup(tabAttribute.Name);
+                newContentType.PropertyGroups.Where(x => x.Name == tabAttribute.Name).FirstOrDefault().SortOrder = tabAttribute.SortOrder;
 
                 CreateProperties(properties[i], newContentType, tabAttribute.Name, dataTypeService);
             }
