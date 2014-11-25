@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Umbraco.Inception.Attributes
 {
@@ -12,6 +8,11 @@ namespace Umbraco.Inception.Attributes
         public string Name { get; set; }
         public int SortOrder { get; set; }
 
+        public UmbracoTabAttribute(string name)
+        {
+            Name = name;
+            SortOrder = 0;
+        }
         public UmbracoTabAttribute(string name, int sortOrder = 0)
         {
             Name = name;
