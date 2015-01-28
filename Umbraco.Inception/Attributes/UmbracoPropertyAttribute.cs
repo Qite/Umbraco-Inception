@@ -18,6 +18,7 @@ namespace Umbraco.Inception.Attributes
         public string Description { get; set; }
         public Type ConverterType { get; set; }
         public int SortOrder { get; set; }
+        public bool AddTabAliasToPropertyAlias { get; set; }
 
         /// <summary>
         /// Put this on properties of your class that inherits from TabBase
@@ -27,9 +28,11 @@ namespace Umbraco.Inception.Attributes
         /// <param name="dataType">Alias of your propertyEditor</param>
         /// <param name="dataTypeInstanceName">Name of the instance of your property editor, leave empty if you are using a built-in</param>
         /// <param name="converterType">Converter class that inherits TypeConverter</param>
-        /// <param name="mandatory"></param>
-        /// <param name="description"></param>
-        public UmbracoPropertyAttribute(string name, string alias, string dataType, string dataTypeInstanceName = null, Type converterType = null, bool mandatory = false, string description = "", int sortOrder = 0)
+        /// <param name="mandatory">if set to <c>true</c> [mandatory].</param>
+        /// <param name="description">The description.</param>
+        /// <param name="sortOrder">The sort order.</param>
+        /// <param name="addTabAliasToPropertyAlias">if set to <c>true</c> add's the tab's alias as a suffix to the property alias.</param>
+        public UmbracoPropertyAttribute(string name, string alias, string dataType, string dataTypeInstanceName = null, Type converterType = null, bool mandatory = false, string description = "", int sortOrder = 0, bool addTabAliasToPropertyAlias=true)
         {
             Name = name;
             Alias = alias;
@@ -39,7 +42,7 @@ namespace Umbraco.Inception.Attributes
             Mandatory = mandatory;
             Description = description;
             SortOrder = sortOrder;
-
+            AddTabAliasToPropertyAlias = addTabAliasToPropertyAlias;
         }
     }
 

@@ -99,6 +99,7 @@ namespace Umbraco.Inception.CodeFirst
             newContentType.Name = attribute.ContentTypeName;
             newContentType.Alias = attribute.ContentTypeAlias;
             newContentType.Icon = attribute.Icon;
+            newContentType.Description = attribute.Description;
 
             if (attribute.CreateMatchingView)
             {
@@ -229,7 +230,7 @@ namespace Umbraco.Inception.CodeFirst
             {
                 PropertyType propertyType = new PropertyType(dataTypeDef);
                 propertyType.Name = attribute.Name;
-                propertyType.Alias = (atTabGeneric ? attribute.Alias : UmbracoCodeFirstExtensions.HyphenToUnderscore(UmbracoCodeFirstExtensions.ParseUrl(attribute.Alias + "_" + tabName, false)));
+                propertyType.Alias = ((atTabGeneric || !attribute.AddTabAliasToPropertyAlias) ? attribute.Alias : UmbracoCodeFirstExtensions.HyphenToUnderscore(UmbracoCodeFirstExtensions.ParseUrl(attribute.Alias + "_" + tabName, false)));
                 propertyType.Description = attribute.Description;
                 propertyType.Mandatory = attribute.Mandatory;
                 propertyType.SortOrder = attribute.SortOrder;
@@ -321,6 +322,7 @@ namespace Umbraco.Inception.CodeFirst
             contentType.Name = attribute.ContentTypeName;
             contentType.Alias = attribute.ContentTypeAlias;
             contentType.Icon = attribute.Icon;
+            contentType.Description = attribute.Description;
             contentType.IsContainer = attribute.EnableListView;
             contentType.AllowedContentTypes = FetchAllowedContentTypes(attribute.AllowedChildren, contentTypeService);
             contentType.AllowedAsRoot = attribute.AllowedAtRoot;
@@ -470,7 +472,7 @@ namespace Umbraco.Inception.CodeFirst
 
                 property.Name = attribute.Name;
                 //TODO: correct name?
-                property.Alias = (atGenericTab ? attribute.Alias : UmbracoCodeFirstExtensions.HyphenToUnderscore(UmbracoCodeFirstExtensions.ParseUrl(attribute.Alias + "_" + tabName, false)));
+                property.Alias = ((atGenericTab || !attribute.AddTabAliasToPropertyAlias) ? attribute.Alias : UmbracoCodeFirstExtensions.HyphenToUnderscore(UmbracoCodeFirstExtensions.ParseUrl(attribute.Alias + "_" + tabName, false)));
                 property.Description = attribute.Description;
                 property.Mandatory = attribute.Mandatory;
 

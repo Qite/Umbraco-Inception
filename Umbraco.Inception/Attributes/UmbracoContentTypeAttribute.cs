@@ -27,6 +27,8 @@ namespace Umbraco.Inception.Attributes
 
         public string Icon { get; set; }
 
+        public string Description { get; set; }
+
         public UmbracoContentTypeAttribute(string contentTypeName, string contentTypeAlias,
             Type[] allowedChildren,
             bool createMatchingView,
@@ -40,7 +42,8 @@ namespace Umbraco.Inception.Attributes
 
         public UmbracoContentTypeAttribute(string contentTypeName, string contentTypeAlias, string templateLocation,
             Type[] allowedChildren, bool createMatchingView, string icon = "icon-folder",
-            string masterTemplate = "", bool allowAtRoot = false, bool enableListView = false)
+            string masterTemplate = "", bool allowAtRoot = false, bool enableListView = false,
+            string description = "")
         {
             ContentTypeName = contentTypeName;
             ContentTypeAlias = contentTypeAlias;
@@ -51,6 +54,7 @@ namespace Umbraco.Inception.Attributes
             AllowedChildren = allowedChildren;
             Icon = icon;
             TemplateLocation = templateLocation;
+            Description = description;
         }
     }
 
