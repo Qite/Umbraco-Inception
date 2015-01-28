@@ -186,6 +186,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\UmbracoContentTypeAttribute.cs" />
+    <Compile Include="Attributes\UmbracoMediaTypeAttribute.cs" />
     <Compile Include="Attributes\UmbracoPropertyAttribute.cs" />
     <Compile Include="Attributes\UmbracoTabAttribute.cs" />
     <Compile Include="BL\TabBase.cs" />
